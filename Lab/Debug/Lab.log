@@ -1,3 +1,2 @@
 ﻿  main.c
-J:\VSProjects\LabSem2\Lab\main.c(7,2): warning C4091: 'typedef ': ignored on left of 'date' when no variable is declared
   Lab.vcxproj -> J:\VSProjects\LabSem2\Lab\Debug\Lab.exe
