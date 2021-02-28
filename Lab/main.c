@@ -4,15 +4,20 @@
 
 int main()
 {
-	unsigned screen = 34;
-	unsigned n;
-	printf("Introduceti un nr. n: ");
+	int n;
+	int res = 0;
+	printf("Introduceti n: ");
 	scanf("%d", &n);
-	for (unsigned i = 0; i < n; i++)
+	for (int i = 1; i <= n; i++)
 	{
-		screen = digit_prod(screen) + 18;
+		res += no_digits(i);
 	}
-	printf("Dupa %d minute va fi afisat %d", n, screen);
+	if (res < 20)
+	{
+		printf("S-au folosit %d cifre", res);
+		return 0;
+	}
+	printf("S-au folosit %d de cifre", res);
 
 	return 0;
 }
