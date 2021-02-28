@@ -1,29 +1,31 @@
 #include <stdio.h>
 
-int mirrored(int x)
+int gcd(int x, int y)
 {
-	int res = 0;
-	while (x)
+	int r;
+	while (y)
 	{
-		res = res * 10 + x % 10;
-		x /= 10;
+		r = x % y;
+		x = y;
+		y = r;
 	}
-	return res;
+	return x;
+}
+
+int scm(int x, int y)
+{
+	return (x * y) / gcd(x, y);
 }
 
 int main()
 {
-	int no;
-	printf("Introduceti un nr.: ");
-	scanf("%d", &no);
-	if (no == mirrored(no))
-	{
-		printf("Rasturnatul numarului introdus este %d si numarul original este palindrom", mirrored(no));
-	}
-	else
-	{
-		printf("Rasturnatul numarului introdus este %d si numarul original nu este palindrom", mirrored(no));
-	}
+	int ext;
+	printf("Introduceti lungimea pt fortareata exterioara(n>=7): ");
+	scanf("%d", &ext);
+	int l1 = ext * 2 + (ext - 1) * 2;
+	int l2 = (ext - 2) * 2 + (ext - 4) * 2;
+	int com = scm(l1, l2);
+	printf("Prima chestie are nevoie de %d cicluri, iar a doua de %d cicluri pt a se putea schimba garda", com / l1, com / l2);
 
 	return 0;
 }
