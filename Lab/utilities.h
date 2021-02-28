@@ -3,5 +3,6 @@
 
 int gcd(int x, int y);
 int scm(int x, int y);
+int digit_prod(int x);
 
 #endif
