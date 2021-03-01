@@ -29,6 +29,15 @@ int no_digits(int x)
 	return res;
 }
 
+int max(int a, int b)
+{
+	if (a >= b)
+	{
+		return a;
+	}
+	return b;
+}
+
 int digit_prod(unsigned x)
 {
 	unsigned res = 1;
