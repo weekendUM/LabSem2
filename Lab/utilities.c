@@ -48,3 +48,15 @@ int digit_prod(unsigned x)
 	}
 	return res;
 }
+
+int factorial(int n)
+{
+	if (n == 2)
+	{
+		return 2;
+	}
+	else
+	{
+		return factorial(n - 1) * n;
+	}
+}
