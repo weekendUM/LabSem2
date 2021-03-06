@@ -13,11 +13,24 @@ void print(int n)
 	}
 }
 
+int get_val(int x, int y)
+{
+	int res = 1;
+	int r = 0;
+	for (int i = 0; i < x; i++, r++)
+	{
+		res += r;
+	}
+	res += y - 1;
+	return res;
+}
+
 int main()
 {
 	int n;
 	scanf("%d", &n);
 	print(n);
+	printf("%d", get_val(2, 1));
 
 	return 0;
 }
