@@ -1,36 +1,35 @@
 #include <stdio.h>
 
-void print(int n)
+void thing(int f, int b, int n)
 {
-	int level = 1;
-	for (int i = 0; i < n; level++)
+	int buffer;
+	for (int i = 0; i < n; i++)
 	{
-		for (int j = 0; j < level && i < n; i++, j++)
+		scanf("%d", &buffer);
+		if (buffer % 2 == 0)
 		{
-			printf("%d ", i + 1);
+			if (f)
+			{
+				f--;
+			}
 		}
-		printf("\n");
+		else
+		{
+			if (b)
+			{
+				b--;
+			}
+		}
 	}
-}
-
-int get_val(int x, int y)
-{
-	int res = 1;
-	int r = 0;
-	for (int i = 0; i < x; i++, r++)
-	{
-		res += r;
-	}
-	res += y - 1;
-	return res;
+	printf("%d\n%d", f, b);
 }
 
 int main()
 {
-	int n;
-	scanf("%d", &n);
-	print(n);
-	printf("%d", get_val(2, 1));
+	int f, b, n;
+	scanf("%d %d %d", &f, &b, &n);
+	thing(f, b, n);
+
 
 	return 0;
 }
