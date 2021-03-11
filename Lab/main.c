@@ -5,7 +5,7 @@ int main()
 {
 	int n;
 	char buffer[80];
-	char* res = malloc(sizeof(char));
+	char* res = NULL;
 	scanf("%d", &n);
 	int max = 0;
 	for (int i = 0; i < n; i++)
@@ -21,16 +21,12 @@ int main()
 		}
 		else if (strlen(buffer) == max)
 		{
-			//printf("%d\n", sizeof(char) * (strlen(res) + 1));
-			char* b = malloc(sizeof(char) * (strlen(res) + 1));
-			strcpy(b, res);
-			free(res);
-			res = malloc(sizeof(char) * (strlen(res) + max + 2));
-			strcpy(res, b);
+			res = realloc(res, sizeof(char) * (strlen(res) + max + 2));
 			strcat(res, buffer);
 			strcat(res, "\n");
-			free(b);
 		}
 	}
+	
 	printf("%s", res);
+	free(res);
 }
