@@ -1,35 +1,36 @@
-#include <stdio.h>
-
-void thing(int f, int b, int n)
-{
-	int buffer;
-	for (int i = 0; i < n; i++)
-	{
-		scanf("%d", &buffer);
-		if (buffer % 2 == 0)
-		{
-			if (f)
-			{
-				f--;
-			}
-		}
-		else
-		{
-			if (b)
-			{
-				b--;
-			}
-		}
-	}
-	printf("%d\n%d", f, b);
-}
+#include<stdio.h>
+#include <string.h>
 
 int main()
 {
-	int f, b, n;
-	scanf("%d %d %d", &f, &b, &n);
-	thing(f, b, n);
-
-
-	return 0;
+	int n;
+	char buffer[80];
+	char* res = malloc(sizeof(char));
+	scanf("%d", &n);
+	int max = 0;
+	for (int i = 0; i < n; i++)
+	{
+		scanf("%s", buffer);
+		if (strlen(buffer) > max)
+		{
+			max = strlen(buffer);
+			free(res);
+			res = malloc(sizeof(char) * (strlen(buffer) + 2));
+			strcpy(res, buffer);
+			strcat(res, "\n");
+		}
+		else if (strlen(buffer) == max)
+		{
+			//printf("%d\n", sizeof(char) * (strlen(res) + 1));
+			char* b = malloc(sizeof(char) * (strlen(res) + 1));
+			strcpy(b, res);
+			free(res);
+			res = malloc(sizeof(char) * (strlen(res) + max + 2));
+			strcpy(res, b);
+			strcat(res, buffer);
+			strcat(res, "\n");
+			free(b);
+		}
+	}
+	printf("%s", res);
 }

@@ -1,2 +1,0 @@
-J:\VSProjects\LabSem2\Lab\Debug\Lab.exe
-J:\VSProjects\LabSem2\Lab\Debug\Lab.pdb
