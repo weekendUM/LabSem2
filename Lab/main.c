@@ -1,32 +1,35 @@
-#include<stdio.h>
-#include <string.h>
+#include <stdio.h>
+
+int remove_dup(int n, int v[])
+{
+	for (int i = 1; i < n; i++)
+	{
+		if (v[i] == v[i - 1])
+		{
+			for (int j = i; j < n - 1; j++)
+			{
+				v[j] = v[j + 1];
+			}
+			i--;
+			n--;
+		}
+	}
+	return n;
+}
 
 int main()
 {
+	int v[100];
 	int n;
-	char buffer[80];
-	char* res = NULL;
 	scanf("%d", &n);
-	int max = 0;
 	for (int i = 0; i < n; i++)
 	{
-		scanf("%s", buffer);
-		if (strlen(buffer) > max)
-		{
-			max = strlen(buffer);
-			free(res);
-			res = malloc(sizeof(char) * (strlen(buffer) + 2));
-			strcpy(res, buffer);
-			strcat(res, "\n");
-		}
-		else if (strlen(buffer) == max)
-		{
-			res = realloc(res, sizeof(char) * (strlen(res) + max + 2));
-			strcat(res, buffer);
-			strcat(res, "\n");
-		}
+		scanf("%d", &v[i]);
 	}
-	
-	printf("%s", res);
-	free(res);
+	n = remove_dup(n, v);
+	for (int i = 0; i < n; i++)
+	{
+		printf("%d ", v[i]);
+	}
+	return 0;
 }
