@@ -1,295 +1,270 @@
-#include<iostream>
-#include <cstring>
+#include <iostream>
+#include <algorithm>
 
-class Student
+class game
 {
-	char* nume;
-	int an;
-	bool baiat = false;
+protected:
+	int year;
+	char* name;
+	float price;
 public:
-	Student(){}
-	Student(const char* nume, const int& an, const bool& baiat);
-	Student(const Student& other);
-	Student operator=(const Student& other);
-	friend std::istream& operator>>(std::istream& in, Student& obj);
+	game() {}
+	game(const int& year, const char* name, const float& price);
 
-	void set_nume(char* nume);
+	//getters
+	inline const int get_year() const { return this->year; }
+	inline const char* get_name() const { return this->name; }
+	inline const float get_price() const { return this->price; }
 
-	inline const char* get_name() const { return this->nume; }
-	inline const int get_an() const { return an; }
-	inline const bool get_sex() const { return baiat; }
+	//setters
+	void set_year(const int& year) { this->year = year; }
+	void set_name(const char* name);
+	void set_price(const float& price) { this->price = price; }
 
-	~Student();
+	//operators
+	friend std::ostream& operator<<(std::ostream& out, const game& obj);
+	friend std::ostream& operator<<(std::ostream& out, game* obj);
+
+	//functions
+	virtual void print();
+
 };
 
-Student** duplicate(Student** arr, const int& size)
+class strategy : public game
 {
-	Student** res = new Student * [size];
-	for (int i = 0; i < size; i++)
-	{
-		res[i] = new Student(*arr[i]);
-	}
-	return res;
-}
-
-class OrganizatieStudenteasca {
-	char* nume;
-	int numarStudenti;
-	int numarMaximStudenti;
-	Student** membri;
+protected:
+	char* theme;
 public:
-	OrganizatieStudenteasca(const char* nume, const int& nr_stud,
-		const int& nr_max_stud, Student** studenti);
-	OrganizatieStudenteasca(const OrganizatieStudenteasca& other);
-	OrganizatieStudenteasca operator=(
-		const OrganizatieStudenteasca& other
-		);
-	void addMembru(const Student&);
-	//void removeMembru(const Student&);
+	strategy() {}
+	strategy(const int& year, const char* name, const float& price,
+		const char* theme) : game(year, name, price)
+	{
+		this->theme = _strdup(theme);
+	}
 
-	inline const char* get_nume() const { return this->nume; }
-	inline const int get_mem_count() const 
-	{ return numarStudenti; }
-	inline Student** get_mem() const { return this->membri; }
+	//getters
+	inline const char* get_theme() const { return this->theme; }
 
-	void set_nume(const char* nume);
-	void set_membri(Student** membri, const int& size);
+	//setters
+	void set_theme(const char* theme);
 
-	friend std::ostream& operator<<(std::ostream& out,
-		const OrganizatieStudenteasca& obj);
+	//functions
+	virtual void print();
 
-	~OrganizatieStudenteasca();
+	//operators
+	friend std::ostream& operator<<(std::ostream& out, const strategy& obj);
+	friend std::ostream& operator<<(std::ostream& out, strategy* obj);
 };
 
-void print_stud(Student** v, const int& n)
+class arcade : public game
 {
-	std::cout << "========\n";
-	for (int i = 0; i < n; i++)
+protected:
+	char* producer;
+public:
+	arcade() {}
+	arcade(const int& year, const char* name, const float& price,
+		const char* producer) : game(year, name, price)
 	{
-		std::cout << v[i]->get_sex() << '\n';
+		this->producer = _strdup(producer);
 	}
-}
 
-Student::Student(const char* nume, const int& an, const bool& baiat)
-{
-	this->nume = _strdup(nume);
-	this->an = an;
-	this->baiat = baiat;
-}
+	void print();
+};
 
-Student::Student(const Student& other)
+class warcraft : public strategy
 {
-	this->nume = _strdup(other.nume);
-	this->an = other.an;
-	this->baiat = other.baiat;
-}
-
-Student Student::operator=(const Student& other)
-{
-	return Student(other.nume, other.an, other.baiat);
-}
-
-void Student::set_nume(char* nume)
-{
-	if (this->nume)
+	float version;
+	int release_year;
+	char* characteristics;
+public:
+	warcraft() {}
+	warcraft(const int& year, const char* name, const float& price, const char* theme,
+		const float& version, const int& release_year) : strategy(year, name, price, theme)
 	{
-		delete[] this->nume;
+		this->version = version;
+		this->release_year = release_year;
 	}
-	this->nume = _strdup(nume);
+
+	//getters
+	inline const float get_version() const { return this->version; }
+	inline const int get_release_year() const { return this->release_year; }
+	inline const char* get_characteristics() const { return this->characteristics; }
+
+	//setters
+	void set_version(const float& version) { this->version = version; }
+	void set_release_year(const int& year) { this->release_year = year; }
+	void set_characteristics(const char* in_string);
+
+	//functions
+	void print();
+
+};
+
+game::game(const int& year, const char* name, const float& price)
+{
+	this->year = year;
+	this->name = _strdup(name);
+	this->price = price;
 }
 
-Student::~Student()
+void game::set_name(const char* name)
 {
-	if (this->nume)
+	if (this->name)
 	{
-		delete[] this->nume;
+		delete[] this->name;
+		this->name = nullptr;
 	}
+	this->name = _strdup(name);
 }
 
-OrganizatieStudenteasca::OrganizatieStudenteasca(const char* nume,
-	const int& nr_stud,
-	const int& nr_max_stud, Student** studenti)
+void strategy::set_theme(const char* theme)
 {
-	this->nume = _strdup(nume);
-	this->numarStudenti = nr_stud;
-	this->numarMaximStudenti = nr_max_stud;
-	this->membri = duplicate(studenti, nr_stud);
-}
-
-OrganizatieStudenteasca::OrganizatieStudenteasca(const OrganizatieStudenteasca& other)
-{
-	this->nume = _strdup(other.nume);
-	this->numarStudenti = other.numarStudenti;
-	this->numarMaximStudenti = other.numarMaximStudenti;
-	this->membri = duplicate(other.membri, other.numarStudenti);
-}
-
-OrganizatieStudenteasca OrganizatieStudenteasca::operator=(const OrganizatieStudenteasca& other)
-{
-	this->set_nume(other.nume);
-	this->numarStudenti = other.numarStudenti;
-	this->numarMaximStudenti = other.numarMaximStudenti;
-	this->set_membri(other.membri, other.numarStudenti);
-	return *this;
-}
-
-void OrganizatieStudenteasca::addMembru(const Student& membru)
-{
-	Student** buffer = new Student * [this->numarStudenti + 1];
-	for (int i = 0; i < this->numarStudenti; i++)
+	if (this->theme)
 	{
-		buffer[i] = this->membri[i];
+		delete[] this->theme;
+		this->theme = 0;
 	}
-	buffer[this->numarStudenti] = new Student(membru);
-	this->numarStudenti++;
+	this->theme = _strdup(theme);
 }
 
-void OrganizatieStudenteasca::set_nume(const char* nume)
+void warcraft::set_characteristics(const char* in_string)
 {
-	if (this->nume)
+	if (this->characteristics)
 	{
-		delete[] this->nume;
+		delete[] this->characteristics;
+		this->characteristics = nullptr;
 	}
-	this->nume = _strdup(nume);
-}
-
-void OrganizatieStudenteasca::set_membri(Student** membri,
-	const int& size)
-{
-	if (this->numarStudenti)
-	{
-		for (int i = 0; i < this->numarStudenti; i++)
-		{
-			delete this->membri[i];
-		}
-		delete[] membri;
-		this->numarStudenti = 0;
-	}
-	this->membri = duplicate(membri, size);
-}
-
-OrganizatieStudenteasca::~OrganizatieStudenteasca()
-{
-	if (this->numarStudenti)
-	{
-		for (int i = 0; i < this->numarStudenti; i++)
-		{
-			delete this->membri[i];
-		}
-		delete[] this->membri;
-	}
-	if (nume)
-	{
-		delete[] nume;
-	}
-}
-
-Student** citire_stud(const int& n)
-{
-	Student buffer;
-	Student** res = new Student * [n];
-	for (int i = 0; i < n; i++)
-	{
-		std::cin.ignore();
-		std::cin >> buffer;
-		/*std::cout << buffer.get_name() << 
-			": " << buffer.get_sex() << '\n';*/
-		res[i] = new Student(buffer);
-	}
-	return res;
-}
-
-OrganizatieStudenteasca** citire(const int& n)
-{
-	int nr_mem, nr_max;
-	char s_buffer[128];	//asta e pt nume
-	OrganizatieStudenteasca** res = new OrganizatieStudenteasca * [n];
-	for (int i = 0; i < n; i++)
-	{
-		std::cin.getline(s_buffer, 127);
-		std::cin >> nr_max;
-		std::cin >> nr_mem;
-		Student** mem = citire_stud(nr_mem);
-		//print_stud(mem, nr_mem);
-		res[i] = new OrganizatieStudenteasca(s_buffer, nr_mem, nr_max,
-			mem);
-		std::cin.ignore();
-	}
-	return res;
-}
-
-void afisare(OrganizatieStudenteasca** v, int n)
-{
-	for (int i = 0; i < n; i++)
-	{
-		std::cout << v[i]->get_nume() << '\n';
-	}
+	this->characteristics = _strdup(in_string);
 }
 
 
-
-void foo(OrganizatieStudenteasca** v, int n)
-{
-	int pos = 0;
-	int max = -1;
-	int k;
-	for (int i = 0; i < n; i++)
-	{
-		k = 0;
-		//print_stud(v[i]->get_mem(), v[i]->get_mem_count());
-		for (int j = 0; j < v[i]->get_mem_count(); j++)
-		{
-			if (v[i]->get_mem()[j]->get_sex() == 0)
-			{
-				k++;
-			}
-		}
-		std::cout << k << '\n';
-		if (k > max)
-		{
-			max = k;
-			pos = i;
-		}
-	}
-	std::cout << v[pos]->get_nume() << '\n';
-}
-
-
+//void read_games(game** games, const int& n);
+void print_games(game** games, const int& n);
+void by_year(game** games, const int& n);
 
 int main()
 {
-	int n;
-	std::cin >> n;
-	std::cin.ignore();
-	OrganizatieStudenteasca** v = citire(n);
-	foo(v, n);
-	//afisare(v, n);
+	int n{ 4 };
+	//std::cin >> n;
+	game** v = new game * [n];
+	v[0] = new game(1993, "Doom", 20);
+	v[1] = new arcade(1991, "Sonic", 50, "SEGA");
+	v[2] = new strategy(1997, "Age Of Empires", 35, "Colonization");
+	v[3] = new warcraft(1993, "Warcraft", 50, "Fantasy", 1.12, 1994);
+	print_games(v, n);
+	by_year(v, n);
+	std::sort(v, v + n, [](game* x, game* y)
+		{
+			return x->get_price() < y->get_price() ||
+				(x->get_price() == y->get_price() &&
+					strcmp(x->get_name(), y->get_name()) < 0);
+		});
+	print_games(v, n);
 }
 
-std::istream& operator>>(std::istream& in, Student& obj)
+//void read_games(game** games, const int& n)
+//{
+//	/*for (int i = 0; i < n; i++)
+//	{
+//		
+//	}*/
+//}
+
+void print_games(game** games, const int& n)
 {
-	//std::cin.ignore();
-	char buffer[128];
-	std::cin.getline(buffer, 127);
-	obj.set_nume(buffer);
-	in >> obj.an;
-	char sex;
-	in >> sex;
-	if (sex == 'M')
+	for (int i = 0; i < n; i++)
 	{
-		obj.baiat = true;
+		games[i]->print();
+		std::cout << '\n';
 	}
-	else if (sex == 'F')
-	{
-		obj.baiat = false;
-	}
-	return in;
 }
 
-std::ostream& operator<<(std::ostream& out,
-	const OrganizatieStudenteasca& obj)
+std::ostream& operator<<(std::ostream& out, const game& obj)
 {
-	out << obj.nume << '\n' << obj.numarStudenti <<
-		'\n' << obj.numarMaximStudenti;
+	out << "Nume: " << obj.name << '\n' <<
+		"An: " << obj.year << '\n' <<
+		"Pret: " << obj.price << "\n\n";
 	return out;
 }
+
+std::ostream& operator<<(std::ostream& out, game* obj)
+{
+	out << *obj;
+	return out;
+}
+
+std::ostream& operator<<(std::ostream& out, const strategy& obj)
+{
+	out << "Nume: " << obj.name << '\n' <<
+		"An: " << obj.year << '\n' <<
+		"Pret: " << obj.price << '\n' <<
+		"Tematica: " << obj.theme << "\n\n";
+	return out;
+}
+std::ostream& operator<<(std::ostream& out, strategy* obj)
+{
+	out << *obj;
+	return out;
+}
+
+void game::print()
+{
+	std::cout << "Nume: " << name << '\n' <<
+		"An: " << year << '\n' <<
+		"Pret: " << price << "\n";
+}
+
+void strategy::print()
+{
+	game::print();
+	std::cout << "Tematica: " << theme << "\n";
+}
+
+void warcraft::print()
+{
+	strategy::print();
+	if (this->characteristics)
+	{
+		std::cout << "Versiune: " << this->version << '\n' <<
+			"An lansare: " << this->release_year << '\n' <<
+			"Caracteristici:\n" << this->characteristics;
+		return;
+	}
+	std::cout << "Versiune: " << this->version << '\n' <<
+		"An lansare: " << this->release_year << '\n';
+}
+
+void arcade::print()
+{
+	game::print();
+	std::cout << this->producer << '\n';
+}
+
+void by_year(game** games, const int& n)
+{
+	bool* checked = new bool[n];
+	for (int i = 0; i < n; i++)
+	{
+		checked[i] = 0;
+	}
+	for (int i = 0; i < n; i++)
+	{
+		if (!checked[i])
+		{
+			int counter = 1;
+			std::cout << games[i]->get_year() << ": ";
+			checked[i] = true;
+			for (int j = 0; j < n; j++)
+			{
+				if (!checked[j] and (games[i]->get_year() == games[j]->get_year()))
+				{
+					counter++;
+					checked[j] = true;
+				}
+				
+			}
+			std::cout << counter << '\n';
+		}
+	}
+}
+
