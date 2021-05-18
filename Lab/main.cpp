@@ -1,58 +1,109 @@
-#include <iostream>
-#include <algorithm>
+﻿#include <iostream>
+#include <math.h>
 
-class rational
+//Definiţi o clasă generică dreaptă care conţine metode care ne permit 
+//să aflam dacă : 2 drepte se intersectează sa nu, un punct aparţine dreptei,
+//unghiul dintre două drepte, etc.Trataţi excepţiile care pot apărea.
+
+template<class T>
+struct punct
 {
-	int numarator;
-	int numitor;
-public:
-	rational(const int& numarator, const int& numitor)
+	T x, y;
+	punct() {}
+	punct(const T& x, const T& y)
 	{
-		if (numitor == 0)
-		{
-			throw "Numitorul nu poate fi 0";
-		}
-		this->numarator = numarator;
-		this->numitor = numitor;
+		this->x = x;
+		this->y = y;
 	}
-	friend bool operator<(const rational& self, const rational& other);
-	friend bool operator==(const rational& self, const rational& other);
-	friend bool operator>(const rational& self, const rational& other);
-	friend std::ostream& operator<<(std::ostream& out, const rational& obj);
+	punct(const punct<T>& other)
+	{
+		this->x = other.x;
+		this->y = other.y;
+	}
 };
 
 template<class T>
-T maxim(const T& a, const T& b, const T& c)
+class dreapta
 {
-	return std::max(std::max(a, b), c);
+	punct<T> p1, p2;
+public:
+	dreapta(const T& x1, const T& x2,
+		const T& y1, const T& y2);
+
+	float get_m();
+
+	template<class Q>
+	bool intersects(dreapta<Q>& obj);
+
+	template<class Q>
+	bool has_point(const punct<Q>& pct);
+
+	template<class Q>
+	float angle_to(dreapta<Q>& other);
+};
+
+template<class T>
+dreapta<T>::dreapta(const T& x1, const T& y1,
+	const T& x2, const T& y2)
+{
+	this->p1.x = x1;
+	this->p1.y = y1;
+	this->p2.x = x2;
+	this->p2.y = y2;
+}
+
+template<class T>
+float dreapta<T>::get_m()
+{
+	return float(this->p2.y - this->p1.y) /
+		(this->p2.x - this->p1.x);
 }
 
 int main()
 {
-	rational a(2, 3), b(1, 2), c(3, 5);
-	std::cout << "max int " << maxim(a, b, c) << std::endl;
+	dreapta d1(1, 1, 3, 3);
+	dreapta d2(4, 3, 4, 5);
+	std::cout << d1.intersects(d2) << '\n';
+	std::cout << d1.has_point(punct(2, 2)) << '\n';
+	std::cout << (d1.angle_to(d2) * 180) / 3.14;
 }
 
-bool operator<(const rational& self, const rational& other)
+template<class T>
+template<class Q>
+bool dreapta<T>::intersects(dreapta<Q>& obj)
 {
-	return self.numarator / float(self.numitor) <
-		other.numarator / float(other.numitor);
+	float m1 = this->get_m();
+	float m2 = obj.get_m();
+	return m1 != m2;
 }
 
-bool operator==(const rational& self, const rational& other)
+template<class T>
+template<class Q>
+bool dreapta<T>::has_point(const punct<Q>& pct)
 {
-	return self.numarator / float(self.numitor) ==
-		other.numarator / float(other.numitor);
+	float m = float(pct.y - this->p1.y) /
+		(pct.x - this->p1.x);
+	float m1 = this->get_m();
+	return m == m1;
 }
 
-bool operator>(const rational& self, const rational& other)
+template<class T>
+template<class Q>
+float dreapta<T>::angle_to(dreapta<Q>& other)
 {
-	return self.numarator / float(self.numitor) >
-		other.numarator / float(other.numitor);
-}
-
-std::ostream& operator<<(std::ostream& out, const rational& obj)
-{
-	out << obj.numarator << '/' << obj.numitor << '\n';
-	return out;
+	//std::cout << this->get_m() << " vs " << other.get_m() << '\n';
+	if (this->get_m() == INFINITY)
+	{
+		return atan(other.get_m());
+	}
+	if (other.get_m() == INFINITY)
+	{
+		return atan(this->get_m());
+	}
+	float res = atan(
+		abs(
+			this->get_m() - other.get_m() /
+			(1 + this->get_m() * other.get_m()))
+	);
+	return res;
 }
