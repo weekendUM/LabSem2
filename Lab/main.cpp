@@ -1,109 +1,74 @@
 ﻿#include <iostream>
-#include <math.h>
-
-//Definiţi o clasă generică dreaptă care conţine metode care ne permit 
-//să aflam dacă : 2 drepte se intersectează sa nu, un punct aparţine dreptei,
-//unghiul dintre două drepte, etc.Trataţi excepţiile care pot apărea.
-
-template<class T>
-struct punct
-{
-	T x, y;
-	punct() {}
-	punct(const T& x, const T& y)
-	{
-		this->x = x;
-		this->y = y;
-	}
-	punct(const punct<T>& other)
-	{
-		this->x = other.x;
-		this->y = other.y;
-	}
-};
-
-template<class T>
-class dreapta
-{
-	punct<T> p1, p2;
-public:
-	dreapta(const T& x1, const T& x2,
-		const T& y1, const T& y2);
-
-	float get_m();
-
-	template<class Q>
-	bool intersects(dreapta<Q>& obj);
-
-	template<class Q>
-	bool has_point(const punct<Q>& pct);
-
-	template<class Q>
-	float angle_to(dreapta<Q>& other);
-};
-
-template<class T>
-dreapta<T>::dreapta(const T& x1, const T& y1,
-	const T& x2, const T& y2)
-{
-	this->p1.x = x1;
-	this->p1.y = y1;
-	this->p2.x = x2;
-	this->p2.y = y2;
-}
-
-template<class T>
-float dreapta<T>::get_m()
-{
-	return float(this->p2.y - this->p1.y) /
-		(this->p2.x - this->p1.x);
-}
+#include <string>
+#include <vector>
+#include <iterator>
+#include <algorithm>
+#include <map>
 
 int main()
 {
-	dreapta d1(1, 1, 3, 3);
-	dreapta d2(4, 3, 4, 5);
-	std::cout << d1.intersects(d2) << '\n';
-	std::cout << d1.has_point(punct(2, 2)) << '\n';
-	std::cout << (d1.angle_to(d2) * 180) / 3.14;
-}
-
-template<class T>
-template<class Q>
-bool dreapta<T>::intersects(dreapta<Q>& obj)
-{
-	float m1 = this->get_m();
-	float m2 = obj.get_m();
-	return m1 != m2;
-}
-
-template<class T>
-template<class Q>
-bool dreapta<T>::has_point(const punct<Q>& pct)
-{
-	float m = float(pct.y - this->p1.y) /
-		(pct.x - this->p1.x);
-	float m1 = this->get_m();
-	return m == m1;
-}
-
-template<class T>
-template<class Q>
-float dreapta<T>::angle_to(dreapta<Q>& other)
-{
-	//std::cout << this->get_m() << " vs " << other.get_m() << '\n';
-	if (this->get_m() == INFINITY)
+	std::vector<std::string> persoane;
+	int n;
+	std::cin >> n;
+	std::string buffer;
+	std::cin.ignore();
+	while (n)
 	{
-		return atan(other.get_m());
+		std::getline(std::cin, buffer);
+		persoane.push_back(buffer);
+		n--;
 	}
-	if (other.get_m() == INFINITY)
+	std::cout << "Cerinta 1:\n";
+	for (auto it = persoane.begin(); it != persoane.end(); it++)
 	{
-		return atan(this->get_m());
+		std::cout << *it << '\n';
 	}
-	float res = atan(
-		abs(
-			this->get_m() - other.get_m() /
-			(1 + this->get_m() * other.get_m()))
-	);
-	return res;
+	std::cout << "Cerinta 2:\n";
+	std::ostream_iterator<std::string> out(std::cout, "\n");
+	std::copy(persoane.begin(), persoane.end(), out);
+	std::cout << "Cerinta 3:\n";
+	std::cout << persoane.size() << '\n';
+	std::cout << "Cerinta 4:\n";
+	sort(persoane.rbegin(), persoane.rend());
+	for (auto it = persoane.begin(); it != persoane.end(); it++)
+	{
+		std::cout << *it << '\n';
+	}
+	std::cout << "Cerinta 5:\n";
+	std::reverse(persoane.begin(), persoane.end());
+	for (auto el : persoane)
+	{
+		std::cout << el << '\n';
+	}
+	std::cout << "Cerinta 6:\n";
+	std::string prenume;
+	std::getline(std::cin, prenume);
+	auto k = 0;
+	for (auto el : persoane)
+	{
+		std::string buffer = el.substr(el.find_first_of(" ") + 1);
+		if (prenume == buffer)
+		{
+			k++;
+		}
+	}
+	std::cout << k << '\n';
+	std::cout << "Cerinta 7:\n";
+	std::map<std::string, int> prenume_unice;
+	for (auto el : persoane)
+	{
+		std::string buffer = el.substr(el.find_first_of(" ") + 1);
+		if (prenume_unice.find(buffer) != prenume_unice.end())
+		{
+			prenume_unice[buffer]++;
+		}
+		else
+		{
+			prenume_unice[buffer] = 1;
+		}
+	}
+	for (auto el : prenume_unice)
+	{
+		std::cout << el.first << " " << el.second << '\n';
+	}
 }
